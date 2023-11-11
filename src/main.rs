@@ -1,5 +1,6 @@
 mod global;
 mod args;
+mod scoring;
 
 use args:: {
     Command,
@@ -13,13 +14,9 @@ fn main() {
     let args = Args::from_args();
 
     let result = match args.cmdline {
-       Command::Global(args) => global::global_align(&args.in_file)
-        // the "ofile" arg to wrote output is not implemented yet
+       Command::Global(args) => global::global_align(&args.in_file, (args.m, args.mm, args.g))
+        // the "ofile" arg to write output is not implemented yet
     };
-
-    //let x = String::from("GATTACA");
-    //let y = String::from("GCATGCU");
-    //let res = global::global_align("./test.fasta");
 
     println!("{:?}", result);
 }

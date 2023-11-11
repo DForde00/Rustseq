@@ -1,13 +1,15 @@
 use fasta::read::FastaReader;
 use std::path::Path;
+use crate::scoring::optional_scoring;
 
-// re insert a -> (String, String) in the function signature later
-pub fn global_align(in_file: &Path) {
-    //change fn signature to fasta_in: String
-    // it is originally (seq1: &str, seq2: &str)
-    // IDK if ill keep this here but this is to read the seqs from the input fasta
+pub fn global_align(in_file: &Path, (m, mm, g): (i32, i32, i32)) {
+
+    let scoring_scheme = optional_scoring((m, mm, g));
     
-    //let infile = Path::new(&fasta_in);
+    let match_score = scoring_scheme.0;
+    let mismatch = scoring_scheme.1 * -1;
+    let gap = scoring_scheme.2 * -1;
+
     let mut seqs = Vec::new();
     for [_description, seq] in FastaReader::new(in_file) {
         seqs.push(seq);
@@ -15,11 +17,6 @@ pub fn global_align(in_file: &Path) {
 
     let seq1 = &seqs[0];
     let seq2 = &seqs[1];
-    // defining the scoring. in future this might be a struct, usable across other alignment
-    // functions
-    let gap = -1;
-    let match_score = 1;
-    let mismatch = -1;
 
     // need a matrix to store the scores
     let cols = seq2.len();
